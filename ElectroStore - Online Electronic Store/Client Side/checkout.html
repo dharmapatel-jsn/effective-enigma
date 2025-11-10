@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - ElectroStore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        .order-summary-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .cart-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .product-img-checkout {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        
+        .order-totals {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .checkout-form {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .form-select:disabled {
+            background-color: #e9ecef;
+            opacity: 0.6;
+        }
+        
+        .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        .state-city-container {
+            position: relative;
+        }
+        
+        .loading-spinner {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+        }
+        
+        .delivery-info {
+            background: linear-gradient(135deg, #e8f5e8, #f0f9ff) !important;
+            border-left: 4px solid #28a745;
+        }
+        
+        .price-highlight {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        @media (max-width: 991px) {
+            .sticky-top {
+                position: relative !important;
+                top: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <a href="index.html" class="logo">
+                <i class="fas fa-bolt"></i> ElectroStore
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="categories.html">Categories</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="orders.html">My Orders</a></li>
+                <li>
+                    <a href="cart.html" class="position-relative">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count badge bg-warning text-dark position-absolute top-0 start-100 translate-middle">0</span>
+                    </a>
+                </li>
+                <li class="auth-links">
+                    <a href="login.html" class="btn btn-outline btn-sm">Login</a>
+                </li>
+                <li class="auth-links">
+                    <a href="register.html" class="btn btn-secondary btn-sm">Register</a>
+                </li>
+                <li class="user-info" style="display: none;"></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <section class="bg-gradient py-4" style="background: linear-gradient(135deg, #007bff, #0056b3);">
+        <div class="container text-white text-center">
+            <h1 class="display-6 fw-bold mb-2">
+                <i class="fas fa-shopping-bag me-3"></i>Secure Checkout
+            </h1>
+            <p class="lead mb-0">Complete your order in just a few simple steps</p>
+        </div>
+    </section>
+
+    <!-- Checkout Progress -->
+    <section class="bg-light py-3 border-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="checkout-progress d-flex justify-content-center align-items-center">
+                        <div class="progress-step completed me-3">
+                            <div class="step-circle bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <span class="text-success fw-bold">Cart</span>
+                        </div>
+                        <div class="progress-line bg-success mx-2" style="width: 80px; height: 3px;"></div>
+                        
+                        <div class="progress-step active me-3">
+                            <div class="step-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                            <span class="text-primary fw-bold">Checkout</span>
+                        </div>
+                        <div class="progress-line bg-secondary mx-2" style="width: 80px; height: 3px;"></div>
+                        
+                        <div class="progress-step me-3">
+                            <div class="step-circle bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <span class="text-muted">Payment</span>
+                        </div>
+                        <div class="progress-line bg-secondary mx-2" style="width: 80px; height: 3px;"></div>
+                        
+                        <div class="progress-step">
+                            <div class="step-circle bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <span class="text-muted">Complete</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Section -->
+    <section class="py-5">
+        <div class="container">
+            <form id="checkoutForm">
+                <div class="row">
+                    <!-- Checkout Form -->
+                    <div class="col-lg-8 mb-4">
+                        <!-- Shipping Address -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-shipping-fast me-2"></i>Shipping Address
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="firstName" name="firstName" required 
+                                                   minlength="2" maxlength="50" placeholder="Enter your first name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="lastName" name="lastName" required 
+                                                   minlength="2" maxlength="50" placeholder="Enter your last name">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="fas fa-envelope text-primary me-2"></i>Email Address <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email" class="form-control" id="email" name="email" required 
+                                           placeholder="Enter your email address">
+                                    <div class="form-text">We'll send order updates to this email</div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="phone" class="form-label">
+                                        <i class="fas fa-phone text-primary me-2"></i>Phone Number <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" 
+                                           pattern="[6-9][0-9]{9}" required maxlength="10" 
+                                           placeholder="Enter 10-digit mobile number">
+                                    <div class="form-text">For delivery updates and support</div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="address" class="form-label">
+                                        <i class="fas fa-home text-primary me-2"></i>Street Address <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control" id="address" name="address" rows="2" 
+                                              placeholder="House no, Building, Street, Area" required></textarea>
+                                    <div class="form-text">Complete address for accurate delivery</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="state" class="form-label">
+                                                <i class="fas fa-map-marker-alt text-primary me-2"></i>State *
+                                            </label>
+                                            <select class="form-select" id="state" name="state" required>
+                                                <option value="">Choose your state...</option>
+                                            </select>
+                                            <small class="text-muted">Select your state to see available cities</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="city" class="form-label">
+                                                <i class="fas fa-city text-primary me-2"></i>City *
+                                            </label>
+                                            <select class="form-select" id="city" name="city" required disabled>
+                                                <option value="">First select a state</option>
+                                            </select>
+                                            <small class="text-muted">Choose your city from the list</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="pincode" class="form-label">
+                                                <i class="fas fa-map-pin text-primary me-2"></i>PIN Code <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" class="form-control" id="pincode" name="pincode" 
+                                                   pattern="[0-9]{6}" maxlength="6" placeholder="Enter 6-digit PIN" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label for="landmark" class="form-label">
+                                                <i class="fas fa-map-signs text-muted me-2"></i>Landmark (Optional)
+                                            </label>
+                                            <input type="text" class="form-control" id="landmark" name="landmark" 
+                                                   placeholder="Near..., Opposite...">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="sameAsBilling" checked>
+                                    <label class="form-check-label" for="sameAsBilling">
+                                        Billing address same as shipping address
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-secondary text-dark">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-credit-card me-2"></i>Payment Method
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="payment-methods">
+                                    <div class="form-check payment-option mb-3">
+                                        <input class="form-check-input" type="radio" name="paymentMethod" 
+                                               id="cod" value="cod" checked>
+                                        <label class="form-check-label" for="cod">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-money-bill-wave fa-2x text-success me-3"></i>
+                                                <div>
+                                                    <strong>Cash on Delivery</strong>
+                                                    <div class="text-muted small">Pay when you receive your order</div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check payment-option mb-3">
+                                        <input class="form-check-input" type="radio" name="paymentMethod" 
+                                               id="upi" value="upi">
+                                        <label class="form-check-label" for="upi">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-mobile-alt fa-2x text-primary me-3"></i>
+                                                <div>
+                                                    <strong>UPI Payment</strong>
+                                                    <div class="text-muted small">Pay using Google Pay, PhonePe, Paytm</div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check payment-option mb-3">
+                                        <input class="form-check-input" type="radio" name="paymentMethod" 
+                                               id="card" value="card">
+                                        <label class="form-check-label" for="card">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-credit-card fa-2x text-warning me-3"></i>
+                                                <div>
+                                                    <strong>Credit/Debit Card</strong>
+                                                    <div class="text-muted small">Visa, Mastercard, RuPay accepted</div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check payment-option mb-3">
+                                        <input class="form-check-input" type="radio" name="paymentMethod" 
+                                               id="netbanking" value="netbanking">
+                                        <label class="form-check-label" for="netbanking">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-university fa-2x text-info me-3"></i>
+                                                <div>
+                                                    <strong>Net Banking</strong>
+                                                    <div class="text-muted small">All major Indian banks supported</div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Options -->
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-primary mb-3">
+                                    <i class="fas fa-cog me-2"></i>Additional Options
+                                </h6>
+                                
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="giftWrap" name="giftWrap">
+                                    <label class="form-check-label" for="giftWrap">
+                                        <i class="fas fa-gift text-danger me-2"></i>
+                                        Gift Wrap (+₹99)
+                                    </label>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="insurance" name="insurance">
+                                    <label class="form-check-label" for="insurance">
+                                        <i class="fas fa-shield-alt text-success me-2"></i>
+                                        Product Insurance (+₹199)
+                                    </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="specialInstructions" class="form-label">
+                                        <i class="fas fa-sticky-note me-2"></i>Special Instructions
+                                    </label>
+                                    <textarea class="form-control" id="specialInstructions" name="specialInstructions" 
+                                              rows="2" placeholder="Any special delivery instructions..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="col-lg-4">
+                        <div class="card order-summary-card sticky-top" style="top: 100px;">
+                            <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #007bff, #0056b3); color: white;">
+                                <h5 class="mb-0 d-flex align-items-center">
+                                    <i class="fas fa-receipt me-2"></i>Order Summary
+                                    <span class="badge bg-light text-dark ms-auto" id="itemCount">0 items</span>
+                                </h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <!-- Cart Items -->
+                                <div id="checkout-cart-items" style="max-height: 300px; overflow-y: auto;">
+                                    <!-- Empty cart message -->
+                                    <div class="text-center py-4" id="empty-cart-message" style="display: none;">
+                                        <i class="fas fa-shopping-cart fa-2x text-muted mb-3"></i>
+                                        <h6 class="text-muted">Your cart is empty</h6>
+                                        <p class="small">Add items from our <a href="index.html" class="text-primary">store</a> first</p>
+                                    </div>
+                                    
+                                    <!-- Cart items will be displayed here -->
+                                    <div id="cart-items-list">
+                                        <!-- Items loaded by JavaScript -->
+                                    </div>
+                                </div>
+
+                                <!-- Order Totals -->
+                                <div class="order-totals border-top">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Subtotal:</span>
+                                        <span id="checkout-subtotal">₹0</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Tax (GST 18%):</span>
+                                        <span id="checkout-tax">₹0</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Shipping:</span>
+                                        <span id="checkout-shipping" class="text-success">Free</span>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <strong class="h5">Total:</strong>
+                                        <strong class="h5 text-primary" id="checkout-total">₹0</strong>
+                                    </div>
+                                    <small class="text-muted d-block text-center">
+                                        <i class="fas fa-shield-alt me-1"></i>Secure SSL encrypted checkout
+                                    </small>
+                                </div>
+
+                                <!-- Estimated Delivery -->
+                                <div class="delivery-info p-3 border-top" style="background: linear-gradient(135deg, #e8f5e8, #f0f9ff);">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-truck text-success me-2 fa-lg"></i>
+                                        <h6 class="text-success mb-0">Estimated Delivery</h6>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                                        <span class="fw-bold text-dark" id="deliveryDate">3-5 business days</span>
+                                    </div>
+                                    <small class="text-muted mt-1 d-block">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Free shipping on orders above ₹499
+                                    </small>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="d-grid gap-2 mb-3">
+                                    <button type="button" class="btn btn-success btn-lg" onclick="placeOrder()">
+                                        <i class="fas fa-credit-card me-2"></i>Complete Order
+                                    </button>
+                                    <a href="cart.html" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to Cart
+                                    </a>
+                                </div>
+
+                                <div class="text-center border-top pt-3">
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <i class="fas fa-shield-alt text-success fa-lg mb-1"></i>
+                                            <small class="d-block text-muted">Secure</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <i class="fas fa-truck text-primary fa-lg mb-1"></i>
+                                            <small class="d-block text-muted">Fast Delivery</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <i class="fas fa-undo text-info fa-lg mb-1"></i>
+                                            <small class="d-block text-muted">Easy Returns</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-bolt"></i> ElectroStore</h3>
+                <p>Your trusted partner for all electronics needs.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <ul>
+                    <li><i class="fas fa-phone"></i> +91-9876543210</li>
+                    <li><i class="fas fa-envelope"></i> support@electrostore.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> New Delhi, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ElectroStore. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+
+
+
+    <style>
+        .checkout-progress {
+            display: flex;
+            align-items: center;
+            max-width: 600px;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            color: #fbbf24;
+        }
+
+        .progress-step i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-step span {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .progress-line {
+            flex: 1;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 0 1rem;
+            position: relative;
+            top: -10px;
+        }
+
+        .progress-line.active {
+            background: #fbbf24;
+        }
+
+        .payment-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .payment-option:hover {
+            border-color: #3b82f6;
+            background-color: #f8faff;
+        }
+
+        .payment-option input[type="radio"]:checked + label {
+            color: #1e40af;
+        }
+
+        .payment-option input[type="radio"]:checked ~ * {
+            border-color: #3b82f6;
+            background-color: #dbeafe;
+        }
+
+        .checkout-item-image {
+            border: 1px solid #e5e7eb;
+        }
+
+        .delivery-info {
+            border-left: 4px solid #10b981;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-progress {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .progress-line {
+                display: none;
+            }
+        }
+    </style>
+
+    <script>
+        // Simple Checkout functionality - Links directly to cart
+        
+        // Display cart items and order summary
+        function displayCheckoutSummary() {
+            const cart = getCart(); // Use function from main.js
+            const cartItemsList = document.getElementById('cart-items-list');
+            const emptyMessage = document.getElementById('empty-cart-message');
+            const itemCount = document.getElementById('itemCount');
+            
+            if (cart.length === 0) {
+                // Show empty cart message and redirect
+                emptyMessage.style.display = 'block';
+                itemCount.textContent = '0 items';
+                alert('Your cart is empty! Please add items first.');
+                window.location.href = 'cart.html';
+                return;
+            }
+            
+            // Hide empty message
+            emptyMessage.style.display = 'none';
+            
+            // Update item count
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            itemCount.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+            
+            // Display cart items
+            cartItemsList.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div class="d-flex align-items-center">
+                        <img src="${item.image || 'assets/images/products/new-product.jpeg'}" 
+                             alt="${item.name}" class="product-img-checkout me-3" 
+                             onerror="this.src='assets/images/products/new-product.jpeg'">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">${item.name}</h6>
+                            <small class="text-muted">Quantity: ${item.quantity}</small>
+                            <br><small class="text-success"><i class="fas fa-check-circle me-1"></i>In Stock</small>
+                        </div>
+                        <div class="text-end">
+                            <strong class="text-primary">${formatCurrency(item.price * item.quantity)}</strong>
+                            <br><small class="text-muted">${formatCurrency(item.price)} each</small>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Calculate totals
+            updateCheckoutTotals(cart);
+        }
+        
+        function updateCheckoutTotals(cart) {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = Math.round(subtotal * 0.18);
+            const shipping = subtotal >= 999 ? 0 : 99; // Free shipping above ₹999
+            const total = subtotal + tax + shipping;
+            
+            // Update display
+            document.getElementById('checkout-subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('checkout-tax').textContent = formatCurrency(tax);
+            document.getElementById('checkout-total').textContent = formatCurrency(total);
+            
+            // Update shipping display
+            const shippingElement = document.getElementById('checkout-shipping');
+            if (shipping === 0) {
+                shippingElement.textContent = 'Free';
+                shippingElement.className = 'text-success fw-bold';
+            } else {
+                shippingElement.textContent = formatCurrency(shipping);
+                shippingElement.className = 'text-warning';
+            }
+        }
+        
+        // Simple order placement
+        function placeOrder() {
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            // Get form data
+            const form = document.getElementById('checkoutForm');
+            const formData = new FormData(form);
+            
+            const customerInfo = {
+                name: formData.get('firstName') + ' ' + formData.get('lastName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                address: formData.get('address'),
+                city: formData.get('city'),
+                state: formData.get('state'),
+                pincode: formData.get('pincode')
+            };
+            
+            // Enhanced validation
+            if (!customerInfo.name.trim()) {
+                alert('Please enter your full name.');
+                return;
+            }
+            
+            if (!customerInfo.email || !customerInfo.email.includes('@')) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            if (!customerInfo.phone || customerInfo.phone.length < 10) {
+                alert('Please enter a valid phone number.');
+                return;
+            }
+            
+            if (!customerInfo.address.trim() || customerInfo.address.length < 10) {
+                alert('Please enter a complete address (minimum 10 characters).');
+                return;
+            }
+            
+            if (!customerInfo.state) {
+                alert('Please select your state.');
+                return;
+            }
+            
+            if (!customerInfo.city) {
+                alert('Please select your city.');
+                return;
+            }
+            
+            if (!formData.get('pincode') || formData.get('pincode').length !== 6) {
+                alert('Please enter a valid 6-digit PIN code.');
+                return;
+            }
+            
+            // Generate order ID
+            const orderId = 'ORD-' + Date.now();
+            
+            // Calculate totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = Math.round(subtotal * 0.18);
+            const shipping = subtotal >= 999 ? 0 : 99;
+            const total = subtotal + tax + shipping;
+            
+            // Create order
+            const order = {
+                orderId: orderId,
+                customer: customerInfo,
+                items: cart,
+                subtotal: subtotal,
+                tax: tax,
+                shipping: shipping,
+                total: total,
+                orderDate: new Date().toLocaleDateString(),
+                status: 'Confirmed'
+            };
+            
+            // Save order to localStorage
+            const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+            orders.push(order);
+            localStorage.setItem('customer_orders', JSON.stringify(orders));
+            
+            // Clear cart
+            localStorage.removeItem('electrostore_cart');
+            
+            // Show success message
+            alert(`Order placed successfully!\n\nOrder ID: ${orderId}\nTotal: ${formatCurrency(total)}\n\nThank you for shopping with ElectroStore!`);
+            
+            // Redirect to home page
+            window.location.href = 'index.html';
+        }
+        
+        // Populate Indian states dropdown
+        function populateStates() {
+            const states = [
+                'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
+                'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
+                'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
+                'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
+                'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
+                'Delhi', 'Puducherry', 'Chandigarh', 'Jammu and Kashmir', 'Ladakh'
+            ];
+            
+            const stateSelect = document.getElementById('state');
+            if (stateSelect) {
+                // Clear existing options except the first one
+                stateSelect.innerHTML = '<option value="">Select State</option>';
+                
+                // Add states
+                states.forEach(state => {
+                    const option = document.createElement('option');
+                    option.value = state;
+                    option.textContent = state;
+                    stateSelect.appendChild(option);
+                });
+                
+                // Add event listener for state change
+                stateSelect.addEventListener('change', function() {
+                    populateCities(this.value);
+                });
+            }
+        }
+
+        // Populate cities based on selected state
+        function populateCities(selectedState) {
+            const citySelect = document.getElementById('city');
+            if (!citySelect) return;
+            
+            // Clear existing options and show loading
+            citySelect.innerHTML = '<option value="">Loading cities...</option>';
+            citySelect.disabled = true;
+            
+            if (!selectedState) {
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                return;
+            }
+            
+            // Major cities for each state
+            const citiesByState = {
+                'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad', 'Solapur', 'Amravati', 'Kolhapur'],
+                'Karnataka': ['Bangalore', 'Mysore', 'Hubli-Dharwad', 'Mangalore', 'Belgaum', 'Gulbarga', 'Davanagere', 'Bellary'],
+                'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem', 'Tirunelveli', 'Tirupur', 'Erode'],
+                'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar', 'Junagadh', 'Gandhinagar'],
+                'Rajasthan': ['Jaipur', 'Jodhpur', 'Udaipur', 'Kota', 'Ajmer', 'Bikaner', 'Alwar', 'Bharatpur'],
+                'West Bengal': ['Kolkata', 'Howrah', 'Durgapur', 'Asansol', 'Siliguri', 'Malda', 'Bardhaman', 'Kharagpur'],
+                'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Agra', 'Varanasi', 'Meerut', 'Allahabad', 'Bareilly', 'Ghaziabad'],
+                'Madhya Pradesh': ['Bhopal', 'Indore', 'Jabalpur', 'Gwalior', 'Ujjain', 'Sagar', 'Dewas', 'Satna'],
+                'Haryana': ['Gurgaon', 'Faridabad', 'Panipat', 'Ambala', 'Yamunanagar', 'Rohtak', 'Hisar', 'Karnal'],
+                'Punjab': ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda', 'Mohali', 'Firozpur', 'Batala'],
+                'Bihar': ['Patna', 'Gaya', 'Bhagalpur', 'Muzaffarpur', 'Purnia', 'Darbhanga', 'Bihar Sharif', 'Arrah'],
+                'Odisha': ['Bhubaneswar', 'Cuttack', 'Rourkela', 'Brahmapur', 'Sambalpur', 'Puri', 'Balasore', 'Baripada'],
+                'Kerala': ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Kollam', 'Palakkad', 'Alappuzha', 'Malappuram'],
+                'Assam': ['Guwahati', 'Silchar', 'Dibrugarh', 'Jorhat', 'Nagaon', 'Tinsukia', 'Tezpur', 'Bongaigaon'],
+                'Jharkhand': ['Ranchi', 'Jamshedpur', 'Dhanbad', 'Bokaro', 'Deoghar', 'Phusro', 'Hazaribagh', 'Giridih'],
+                'Chhattisgarh': ['Raipur', 'Bhilai', 'Korba', 'Bilaspur', 'Durg', 'Rajnandgaon', 'Jagdalpur', 'Raigarh'],
+                'Andhra Pradesh': ['Visakhapatnam', 'Vijayawada', 'Guntur', 'Nellore', 'Kurnool', 'Rajahmundry', 'Tirupati', 'Kakinada'],
+                'Telangana': ['Hyderabad', 'Warangal', 'Nizamabad', 'Khammam', 'Karimnagar', 'Ramagundam', 'Mahbubnagar', 'Nalgonda'],
+                'Delhi': ['New Delhi', 'North Delhi', 'South Delhi', 'East Delhi', 'West Delhi', 'Central Delhi', 'North East Delhi', 'Dwarka'],
+                'Goa': ['Panaji', 'Vasco da Gama', 'Margao', 'Mapusa', 'Ponda', 'Bicholim', 'Curchorem', 'Calangute'],
+                'Himachal Pradesh': ['Shimla', 'Solan', 'Dharamshala', 'Mandi', 'Palampur', 'Baddi', 'Nahan', 'Una'],
+                'Jammu and Kashmir': ['Srinagar', 'Jammu', 'Baramulla', 'Anantnag', 'Sopore', 'Kathua', 'Udhampur', 'Punch'],
+                'Uttarakhand': ['Dehradun', 'Haridwar', 'Roorkee', 'Haldwani', 'Rudrapur', 'Kashipur', 'Rishikesh', 'Nainital'],
+                'Tripura': ['Agartala', 'Dharmanagar', 'Udaipur', 'Kailasahar', 'Belonia', 'Khowai', 'Bishalgarh', 'Teliamura'],
+                'Manipur': ['Imphal', 'Thoubal', 'Bishnupur', 'Churachandpur', 'Kakching', 'Ukhrul', 'Senapati', 'Tamenglong'],
+                'Meghalaya': ['Shillong', 'Tura', 'Cherrapunji', 'Jowai', 'Baghmara', 'Williamnagar', 'Nongpoh', 'Resubelpara'],
+                'Mizoram': ['Aizawl', 'Lunglei', 'Champhai', 'Serchhip', 'Kolasib', 'Lawngtlai', 'Mamit', 'Saiha'],
+                'Nagaland': ['Kohima', 'Dimapur', 'Mokokchung', 'Tuensang', 'Wokha', 'Zunheboto', 'Phek', 'Mon'],
+                'Sikkim': ['Gangtok', 'Namchi', 'Geyzing', 'Mangan', 'Jorethang', 'Singtam', 'Rangpo', 'Pakyong'],
+                'Arunachal Pradesh': ['Itanagar', 'Naharlagun', 'Pasighat', 'Tezpur', 'Bomdila', 'Ziro', 'Along', 'Changlang'],
+                'Ladakh': ['Leh', 'Kargil', 'Nubra', 'Zanskar', 'Drass', 'Nyoma', 'Chushul', 'Durbuk'],
+                'Chandigarh': ['Chandigarh Sector 1', 'Chandigarh Sector 17', 'Chandigarh Sector 22', 'Chandigarh Sector 35', 'Mani Majra'],
+                'Puducherry': ['Puducherry', 'Karaikal', 'Mahe', 'Yanam', 'Ozhukarai', 'Villianur', 'Bahour', 'Nettapakkam']
+            };
+            
+            // Get cities for selected state or default cities
+            const cities = citiesByState[selectedState] || [
+                selectedState + ' City 1',
+                selectedState + ' City 2', 
+                selectedState + ' City 3',
+                selectedState + ' City 4',
+                selectedState + ' City 5'
+            ];
+            
+            // Simulate loading delay for better UX
+            setTimeout(() => {
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                
+                // Add cities to dropdown
+                cities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+                
+                // Enable city dropdown
+                citySelect.disabled = false;
+            }, 300);
+        }
+
+        // Initialize page when loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            displayCheckoutSummary();
+            populateStates(); // Populate states dropdown
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

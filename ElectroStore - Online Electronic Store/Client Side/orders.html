@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - ElectroStore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <a href="index.html" class="logo">
+                <i class="fas fa-bolt"></i> ElectroStore
+            </a>
+            
+            <div class="d-flex align-items-center gap-4">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="orders.html" class="text-warning">My Orders</a></li>
+                    <li>
+                        <a href="cart.html" class="position-relative">
+                            <i class="fas fa-shopping-cart"></i> Cart
+                            <span class="cart-count badge bg-warning text-dark position-absolute top-0 start-100 translate-middle">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <section class="bg-primary text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="display-5 font-weight-bold">My Orders</h1>
+                    <p class="lead">Track and view your order history</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Orders Section -->
+    <section class="py-5">
+        <div class="container">
+            <!-- Filter Options -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <select class="form-select" id="statusFilter" onchange="filterOrders()">
+                        <option value="">All Orders</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="col-md-6 text-end">
+                    <span class="text-muted">Total Orders: <strong id="totalOrders">0</strong></span>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div id="ordersContainer">
+                        <!-- Orders will be loaded here -->
+                    </div>
+                    
+                    <!-- No Orders Message -->
+                    <div class="text-center py-5" id="noOrdersMessage" style="display: none;">
+                        <i class="fas fa-shopping-bag fa-4x text-muted mb-3"></i>
+                        <h4 class="text-muted">No Orders Found</h4>
+                        <p class="text-muted">You haven't placed any orders yet.</p>
+                        <a href="index.html" class="btn btn-primary">
+                            <i class="fas fa-shopping-bag me-2"></i>Start Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-bolt"></i> ElectroStore</h3>
+                <p>Your trusted partner for all electronics needs.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <ul>
+                    <li><i class="fas fa-phone"></i> +91-9876543210</li>
+                    <li><i class="fas fa-envelope"></i> support@electrostore.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ElectroStore. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        // Sample orders data for demonstration
+        function createSampleOrders() {
+            return [
+                {
+                    orderId: 'ORD001',
+                    orderDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'shipped',
+                    estimatedDelivery: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+                    customer: {
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        email: 'john@example.com',
+                        phone: '+91 9876543210',
+                        address: '123 Tech Street',
+                        city: 'Mumbai',
+                        state: 'Maharashtra',
+                        pincode: '400001'
+                    },
+                    items: [
+                        { name: 'Samsung Galaxy S24', quantity: 1, price: 75999, image: 'assets/images/products/samsung-s24.jpg' },
+                        { name: 'Sony Headphones', quantity: 1, price: 24999, image: 'assets/images/products/sony-headphones.jpg' }
+                    ],
+                    summary: { subtotal: 100998, gst: 18180, shipping: 0, total: 119178 },
+                    paymentMethod: 'Credit Card'
+                },
+                {
+                    orderId: 'ORD002',
+                    orderDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'delivered',
+                    estimatedDelivery: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+                    customer: {
+                        firstName: 'Jane',
+                        lastName: 'Smith',
+                        email: 'jane@example.com',
+                        phone: '+91 9876543211',
+                        address: '456 Electronics Ave',
+                        city: 'Delhi',
+                        state: 'Delhi',
+                        pincode: '110001'
+                    },
+                    items: [
+                        { name: 'MacBook Air', quantity: 1, price: 99900, image: 'assets/images/products/macbook-air.jpg' }
+                    ],
+                    summary: { subtotal: 99900, gst: 17982, shipping: 0, total: 117882 },
+                    paymentMethod: 'UPI'
+                },
+                {
+                    orderId: 'ORD003',
+                    orderDate: new Date().toISOString(),
+                    status: 'confirmed',
+                    estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+                    customer: {
+                        firstName: 'Mike',
+                        lastName: 'Johnson',
+                        email: 'mike@example.com',
+                        phone: '+91 9876543212',
+                        address: '789 Gadget Road',
+                        city: 'Bangalore',
+                        state: 'Karnataka',
+                        pincode: '560001'
+                    },
+                    items: [
+                        { name: 'iPad Pro', quantity: 1, price: 89900, image: 'assets/images/products/ipad-pro.jpg' },
+                        { name: 'JBL Speaker', quantity: 2, price: 12999, image: 'assets/images/products/jbl-speaker.jpg' }
+                    ],
+                    summary: { subtotal: 115898, gst: 20862, shipping: 0, total: 136760 },
+                    paymentMethod: 'Net Banking'
+                }
+            ];
+        }
+
+        // Initialize orders data
+        function initializeOrders() {
+            let orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+            if (orders.length === 0) {
+                orders = createSampleOrders();
+                localStorage.setItem('customer_orders', JSON.stringify(orders));
+            }
+            return orders;
+        }
+
+        // Load and display orders
+        function loadOrders() {
+            const orders = initializeOrders();
+            displayOrders(orders);
+            updateTotalCount(orders.length);
+        }
+
+        // Display orders
+        function displayOrders(orders) {
+            const container = document.getElementById('ordersContainer');
+            const noOrdersMsg = document.getElementById('noOrdersMessage');
+            
+            if (orders.length === 0) {
+                container.innerHTML = '';
+                noOrdersMsg.style.display = 'block';
+                return;
+            }
+            
+            noOrdersMsg.style.display = 'none';
+            
+            const ordersHtml = orders.map(order => {
+                const orderDate = new Date(order.orderDate).toLocaleDateString('en-IN');
+                const deliveryDate = new Date(order.estimatedDelivery).toLocaleDateString('en-IN');
+                const statusColor = getStatusColor(order.status);
+                
+                return `
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1">Order #${order.orderId}</h5>
+                                <small class="text-muted">Placed on ${orderDate}</small>
+                            </div>
+                            <span class="badge bg-${statusColor} fs-6">${order.status.toUpperCase()}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6>Items (${order.items.length})</h6>
+                                    <div class="row">
+                                        ${order.items.slice(0, 3).map(item => `
+                                            <div class="col-sm-4 mb-2">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="${item.image}" alt="${item.name}" class="img-fluid rounded" 
+                                                         style="width: 50px; height: 50px; object-fit: cover;">
+                                                    <div class="ms-2">
+                                                        <small class="fw-bold">${item.name}</small>
+                                                        <br><small class="text-muted">Qty: ${item.quantity}</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                        ${order.items.length > 3 ? `
+                                            <div class="col-sm-4 mb-2">
+                                                <small class="text-muted">+${order.items.length - 3} more items</small>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        <h6>Delivery Address</h6>
+                                        <p class="small mb-0">
+                                            ${order.customer.firstName} ${order.customer.lastName}<br>
+                                            ${order.customer.address}<br>
+                                            ${order.customer.city}, ${order.customer.state} - ${order.customer.pincode}<br>
+                                            Phone: ${order.customer.phone}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-end">
+                                        <h5 class="text-primary">${formatCurrency(order.summary.total)}</h5>
+                                        <p class="small mb-2">
+                                            <strong>Payment:</strong> ${order.paymentMethod}
+                                        </p>
+                                        <p class="small mb-3">
+                                            <strong>Expected Delivery:</strong><br>
+                                            <span class="text-success">${deliveryDate}</span>
+                                        </p>
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="viewOrderDetails('${order.orderId}')">
+                                                <i class="fas fa-eye me-1"></i> View Details
+                                            </button>
+                                            <button class="btn btn-outline-success btn-sm" onclick="trackOrder('${order.orderId}')">
+                                                <i class="fas fa-truck me-1"></i> Track Order
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = ordersHtml;
+        }
+
+        // Filter orders by status
+        function filterOrders() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const allOrders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+            
+            let filteredOrders = allOrders;
+            if (statusFilter) {
+                filteredOrders = allOrders.filter(order => order.status === statusFilter);
+            }
+            
+            displayOrders(filteredOrders);
+            updateTotalCount(filteredOrders.length);
+        }
+
+        // Update total count
+        function updateTotalCount(count) {
+            document.getElementById('totalOrders').textContent = count;
+        }
+        
+        // Get status color for badges
+        function getStatusColor(status) {
+            switch (status.toLowerCase()) {
+                case 'confirmed': return 'success';
+                case 'processing': return 'primary';
+                case 'shipped': return 'info';
+                case 'delivered': return 'success';
+                case 'cancelled': return 'danger';
+                default: return 'secondary';
+            }
+        }
+
+        // Format currency in Indian Rupees
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR'
+            }).format(amount);
+        }
+
+        // View order details
+        function viewOrderDetails(orderId) {
+            const orders = JSON.parse(localStorage.getItem('customer_orders') || '[]');
+            const order = orders.find(o => o.orderId === orderId);
+            
+            if (!order) {
+                alert('Order not found!');
+                return;
+            }
+            
+            const itemsList = order.items.map(item => 
+                `${item.name} (Qty: ${item.quantity}) - ${formatCurrency(item.price * item.quantity)}`
+            ).join('\n');
+            
+            const details = `Order Details:
+
+Order ID: ${order.orderId}
+Date: ${new Date(order.orderDate).toLocaleString('en-IN')}
+Status: ${order.status.toUpperCase()}
+
+Customer: ${order.customer.firstName} ${order.customer.lastName}
+Email: ${order.customer.email}
+Phone: ${order.customer.phone}
+
+Address:
+${order.customer.address}
+${order.customer.city}, ${order.customer.state} - ${order.customer.pincode}
+
+Items:
+${itemsList}
+
+Order Summary:
+Subtotal: ${formatCurrency(order.summary.subtotal)}
+GST (18%): ${formatCurrency(order.summary.gst)}
+Shipping: ${formatCurrency(order.summary.shipping)}
+Total: ${formatCurrency(order.summary.total)}
+
+Payment Method: ${order.paymentMethod}
+Expected Delivery: ${new Date(order.estimatedDelivery).toLocaleDateString('en-IN')}`;
+            
+            alert(details);
+        }
+
+        // Track order with progress simulation
+        function trackOrder(orderId) {
+            const trackingSteps = [
+                'Order Confirmed',
+                'Preparing for Dispatch', 
+                'Shipped from Warehouse',
+                'Out for Delivery',
+                'Delivered'
+            ];
+            
+            // Simulate random progress for demo (1-4 steps completed)
+            const currentStep = Math.floor(Math.random() * 4) + 1;
+            
+            let trackingInfo = `Order Tracking - #${orderId}\n\n`;
+            
+            trackingSteps.forEach((step, index) => {
+                if (index < currentStep) {
+                    trackingInfo += `✅ ${step}\n`;
+                } else if (index === currentStep) {
+                    trackingInfo += `🔄 ${step} (In Progress)\n`;
+                } else {
+                    trackingInfo += `⏳ ${step}\n`;
+                }
+            });
+            
+            const remainingDays = 5 - currentStep;
+            if (remainingDays > 0) {
+                trackingInfo += `\nEstimated delivery in ${remainingDays} days`;
+            } else {
+                trackingInfo += `\nOrder delivered successfully!`;
+            }
+            
+            alert(trackingInfo);
+        }
+
+        // Initialize page when DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+        });
+    </script>
+</body>
+</html>

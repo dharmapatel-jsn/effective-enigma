@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - ElectroStore Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.tailwindcss.com/2.2.19" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="dashboard.html" class="sidebar-logo">
+                    <i class="fas fa-bolt"></i> ElectroStore Admin
+                </a>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="dashboard.html" class="nav-link">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    
+                    <div class="nav-section">Products</div>
+                    <li class="nav-item">
+                        <a href="products.html" class="nav-link">
+                            <i class="fas fa-box"></i>
+                            <span>All Products</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="add-product.html" class="nav-link">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Product</span>
+                        </a>
+                    </li>
+                    
+                    <div class="nav-section">Orders</div>
+                    <li class="nav-item">
+                        <a href="orders.html" class="nav-link">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Orders</span>
+                        </a>
+                    </li>
+                    
+                    <div class="nav-section">Users</div>
+                    <li class="nav-item">
+                        <a href="users.html" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Customers</span>
+                        </a>
+                    </li>
+                    
+                    <div class="nav-section">Settings</div>
+                    <li class="nav-item">
+                        <a href="settings.html" class="nav-link active">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main" id="mainContent">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="breadcrumb">
+                        <a href="dashboard.html">Dashboard</a> / Settings
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="admin-user" onclick="AdminPanel.logoutAdmin()">
+                        <div class="user-avatar">A</div>
+                        <span class="admin-user-name">Admin</span>
+                        <i class="fas fa-sign-out-alt ms-2"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="admin-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="page-title">Settings</h1>
+                        <p class="page-subtitle">Manage your store configuration and preferences</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Settings Navigation -->
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <a href="#general" class="list-group-item list-group-item-action active" onclick="showSettingsTab('general', this)">
+                                        <i class="fas fa-store me-2"></i>General Settings
+                                    </a>
+                                    <a href="#notifications" class="list-group-item list-group-item-action" onclick="showSettingsTab('notifications', this)">
+                                        <i class="fas fa-bell me-2"></i>Notifications
+                                    </a>
+                                    <a href="#payment" class="list-group-item list-group-item-action" onclick="showSettingsTab('payment', this)">
+                                        <i class="fas fa-credit-card me-2"></i>Payment Settings
+                                    </a>
+                                    <a href="#shipping" class="list-group-item list-group-item-action" onclick="showSettingsTab('shipping', this)">
+                                        <i class="fas fa-shipping-fast me-2"></i>Shipping Settings
+                                    </a>
+                                    <a href="#security" class="list-group-item list-group-item-action" onclick="showSettingsTab('security', this)">
+                                        <i class="fas fa-shield-alt me-2"></i>Security
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Content -->
+                    <div class="col-md-9">
+                        <!-- General Settings -->
+                        <div id="general-settings" class="settings-tab">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-store me-2"></i>General Store Settings
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="generalSettingsForm" onsubmit="handleSettingsUpdate(event)" novalidate>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Store Name <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="storeName" name="storeName" value="ElectroStore" required minlength="2" maxlength="50">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Store Email <span class="text-danger">*</span></label>
+                                                <input type="email" class="form-control" id="storeEmail" name="email" value="admin@electrostore.com" required>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Store Phone <span class="text-danger">*</span></label>
+                                                <input type="tel" class="form-control" id="storePhone" name="phone" value="9876543210" required pattern="[6-9][0-9]{9}" maxlength="10">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Currency</label>
+                                                <select class="form-select" id="storeCurrency">
+                                                    <option value="INR" selected>Indian Rupee (₹)</option>
+                                                    <option value="USD">US Dollar ($)</option>
+                                                    <option value="EUR">Euro (€)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Store Address <span class="text-danger">*</span></label>
+                                            <textarea class="form-control" id="storeAddress" name="address" rows="3" required minlength="10" maxlength="300">123 Electronics Street, Tech Park, Mumbai, Maharashtra 400001</textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Store Description</label>
+                                            <textarea class="form-control" id="storeDescription" rows="4">Your one-stop destination for all electronic gadgets and accessories. We provide quality products at competitive prices with excellent customer service.</textarea>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Business Hours (Weekdays)</label>
+                                                <input type="text" class="form-control" id="weekdayHours" value="9:00 AM - 8:00 PM">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Business Hours (Weekends)</label>
+                                                <input type="text" class="form-control" id="weekendHours" value="10:00 AM - 6:00 PM">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Save Changes
+                                    </button>
+                                    <button type="reset" class="btn btn-outline-secondary ms-2">
+                                        <i class="fas fa-undo me-2"></i>Reset
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notification Settings -->
+                        <div id="notifications-settings" class="settings-tab" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-bell me-2"></i>Notification Settings
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Email Notifications</h6>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="emailNewOrders" checked>
+                                                <label class="form-check-label" for="emailNewOrders">New Order Alerts</label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="emailLowStock" checked>
+                                                <label class="form-check-label" for="emailLowStock">Low Stock Alerts</label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="emailNewCustomers">
+                                                <label class="form-check-label" for="emailNewCustomers">New Customer Registrations</label>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" id="emailDailySummary" checked>
+                                                <label class="form-check-label" for="emailDailySummary">Daily Sales Summary</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <h6>System Notifications</h6>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="systemMaintenance" checked>
+                                                <label class="form-check-label" for="systemMaintenance">Maintenance Alerts</label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="systemUpdates" checked>
+                                                <label class="form-check-label" for="systemUpdates">System Updates</label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="systemSecurity">
+                                                <label class="form-check-label" for="systemSecurity">Security Alerts</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+                                    <h6>Notification Recipients</h6>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Primary Email</label>
+                                            <input type="email" class="form-control" id="primaryNotificationEmail" value="admin@electrostore.com">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Secondary Email (Optional)</label>
+                                            <input type="email" class="form-control" id="secondaryNotificationEmail" placeholder="manager@electrostore.com">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-primary" onclick="saveNotificationSettings()">
+                                        <i class="fas fa-save me-2"></i>Save Notification Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Settings -->
+                        <div id="payment-settings" class="settings-tab" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-credit-card me-2"></i>Payment Gateway Settings
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Accepted Payment Methods</h6>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="paymentCOD" checked>
+                                                <label class="form-check-label" for="paymentCOD">Cash on Delivery</label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="paymentCards" checked>
+                                                <label class="form-check-label" for="paymentCards">Credit/Debit Cards</label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="paymentUPI" checked>
+                                                <label class="form-check-label" for="paymentUPI">UPI Payments</label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="paymentNetbanking" checked>
+                                                <label class="form-check-label" for="paymentNetbanking">Net Banking</label>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" id="paymentWallets">
+                                                <label class="form-check-label" for="paymentWallets">Digital Wallets</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <h6>Payment Configuration</h6>
+                                            <div class="mb-3">
+                                                <label class="form-label">COD Charge</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    <input type="number" class="form-control" id="codCharge" value="50" min="0">
+                                                </div>
+                                                <small class="text-muted">Additional charge for Cash on Delivery</small>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Minimum Order for Free COD</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    <input type="number" class="form-control" id="freeCodLimit" value="500" min="0">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Payment Gateway</label>
+                                                <select class="form-select" id="paymentGateway">
+                                                    <option value="razorpay" selected>Razorpay</option>
+                                                    <option value="payu">PayU</option>
+                                                    <option value="paypal">PayPal</option>
+                                                    <option value="stripe">Stripe</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-primary" onclick="savePaymentSettings()">
+                                        <i class="fas fa-save me-2"></i>Save Payment Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shipping Settings -->
+                        <div id="shipping-settings" class="settings-tab" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-shipping-fast me-2"></i>Shipping Configuration
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Default Shipping Charge</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">₹</span>
+                                                <input type="number" class="form-control" id="defaultShipping" value="100" min="0">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Free Shipping Above</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">₹</span>
+                                                <input type="number" class="form-control" id="freeShippingLimit" value="1000" min="0">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Processing Time</label>
+                                            <select class="form-select" id="processingTime">
+                                                <option value="1-2">1-2 Business Days</option>
+                                                <option value="2-3" selected>2-3 Business Days</option>
+                                                <option value="3-5">3-5 Business Days</option>
+                                                <option value="5-7">5-7 Business Days</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Delivery Time</label>
+                                            <select class="form-select" id="deliveryTime">
+                                                <option value="2-4">2-4 Business Days</option>
+                                                <option value="3-5" selected>3-5 Business Days</option>
+                                                <option value="5-7">5-7 Business Days</option>
+                                                <option value="7-10">7-10 Business Days</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <h6>Shipping Zones</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Zone</th>
+                                                    <th>States</th>
+                                                    <th>Shipping Charge</th>
+                                                    <th>Delivery Time</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>North India</td>
+                                                    <td>Delhi, Punjab, Haryana, UP</td>
+                                                    <td>₹80</td>
+                                                    <td>2-3 days</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>West India</td>
+                                                    <td>Maharashtra, Gujarat, Rajasthan</td>
+                                                    <td>₹100</td>
+                                                    <td>3-4 days</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>South India</td>
+                                                    <td>Karnataka, Tamil Nadu, Kerala</td>
+                                                    <td>₹120</td>
+                                                    <td>4-5 days</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>East India</td>
+                                                    <td>West Bengal, Odisha, Jharkhand</td>
+                                                    <td>₹140</td>
+                                                    <td>5-6 days</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-primary" onclick="saveShippingSettings()">
+                                        <i class="fas fa-save me-2"></i>Save Shipping Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Settings -->
+                        <div id="security-settings" class="settings-tab" style="display: none;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-shield-alt me-2"></i>Security Settings
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Password Policy</h6>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="strongPasswords" checked>
+                                                <label class="form-check-label" for="strongPasswords">Require Strong Passwords</label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="passwordExpiry">
+                                                <label class="form-check-label" for="passwordExpiry">Password Expiry (90 days)</label>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" id="twoFactorAuth">
+                                                <label class="form-check-label" for="twoFactorAuth">Two-Factor Authentication</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <h6>Session Management</h6>
+                                            <div class="mb-3">
+                                                <label class="form-label">Session Timeout (minutes)</label>
+                                                <select class="form-select" id="sessionTimeout">
+                                                    <option value="30" selected>30 minutes</option>
+                                                    <option value="60">1 hour</option>
+                                                    <option value="120">2 hours</option>
+                                                    <option value="480">8 hours</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="loginAlerts" checked>
+                                                <label class="form-check-label" for="loginAlerts">Login Attempt Alerts</label>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" id="ipWhitelist">
+                                                <label class="form-check-label" for="ipWhitelist">IP Address Whitelist</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+                                    <h6>Change Admin Password</h6>
+                                    <form id="passwordChangeForm">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Current Password</label>
+                                                <input type="password" class="form-control" id="currentPassword" required>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">New Password</label>
+                                                <input type="password" class="form-control" id="newPassword" required>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Confirm New Password</label>
+                                                <input type="password" class="form-control" id="confirmPassword" required>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-warning" onclick="changePassword()">
+                                            <i class="fas fa-key me-2"></i>Change Password
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="card-footer">
+                                    <button class="btn btn-primary" onclick="saveSecuritySettings()">
+                                        <i class="fas fa-save me-2"></i>Save Security Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/admin.js"></script>
+    <script>
+        // Settings Page Specific JavaScript
+        
+        // Initialize settings page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+        });
+
+        function showSettingsTab(tabName, element) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.settings-tab');
+            tabs.forEach(tab => tab.style.display = 'none');
+            
+            // Remove active class from all nav items
+            const navItems = document.querySelectorAll('.list-group-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            
+            // Show selected tab and add active class
+            document.getElementById(tabName + '-settings').style.display = 'block';
+            element.classList.add('active');
+        }
+
+        function loadSettings() {
+            // Load saved settings from localStorage
+            const settings = JSON.parse(localStorage.getItem('storeSettings') || '{}');
+            
+            // Populate form fields with saved settings
+            if (settings.general) {
+                const general = settings.general;
+                document.getElementById('storeName').value = general.storeName || 'ElectroStore';
+                document.getElementById('storeEmail').value = general.storeEmail || 'admin@electrostore.com';
+                document.getElementById('storePhone').value = general.storePhone || '+91 98765 43210';
+                document.getElementById('storeCurrency').value = general.storeCurrency || 'INR';
+                document.getElementById('storeAddress').value = general.storeAddress || '123 Electronics Street, Tech Park, Mumbai, Maharashtra 400001';
+                document.getElementById('storeDescription').value = general.storeDescription || 'Your one-stop destination for all electronic gadgets and accessories.';
+                document.getElementById('weekdayHours').value = general.weekdayHours || '9:00 AM - 8:00 PM';
+                document.getElementById('weekendHours').value = general.weekendHours || '10:00 AM - 6:00 PM';
+            }
+            
+            // Load notification settings
+            if (settings.notifications) {
+                const notifications = settings.notifications;
+                document.getElementById('emailNewOrders').checked = notifications.emailNewOrders !== false;
+                document.getElementById('emailLowStock').checked = notifications.emailLowStock !== false;
+                document.getElementById('emailNewCustomers').checked = notifications.emailNewCustomers || false;
+                document.getElementById('emailDailySummary').checked = notifications.emailDailySummary !== false;
+                document.getElementById('systemMaintenance').checked = notifications.systemMaintenance !== false;
+                document.getElementById('systemUpdates').checked = notifications.systemUpdates !== false;
+                document.getElementById('systemSecurity').checked = notifications.systemSecurity || false;
+                document.getElementById('primaryNotificationEmail').value = notifications.primaryEmail || 'admin@electrostore.com';
+                document.getElementById('secondaryNotificationEmail').value = notifications.secondaryEmail || '';
+            }
+            
+            // Load other settings...
+        }
+
+        function saveGeneralSettings() {
+            const settings = JSON.parse(localStorage.getItem('storeSettings') || '{}');
+            
+            settings.general = {
+                storeName: document.getElementById('storeName').value,
+                storeEmail: document.getElementById('storeEmail').value,
+                storePhone: document.getElementById('storePhone').value,
+                storeCurrency: document.getElementById('storeCurrency').value,
+                storeAddress: document.getElementById('storeAddress').value,
+                storeDescription: document.getElementById('storeDescription').value,
+                weekdayHours: document.getElementById('weekdayHours').value,
+                weekendHours: document.getElementById('weekendHours').value
+            };
+            
+            localStorage.setItem('storeSettings', JSON.stringify(settings));
+            showNotification('General settings saved successfully!', 'success');
+        }
+
+        function saveNotificationSettings() {
+            const settings = JSON.parse(localStorage.getItem('storeSettings') || '{}');
+            
+            settings.notifications = {
+                emailNewOrders: document.getElementById('emailNewOrders').checked,
+                emailLowStock: document.getElementById('emailLowStock').checked,
+                emailNewCustomers: document.getElementById('emailNewCustomers').checked,
+                emailDailySummary: document.getElementById('emailDailySummary').checked,
+                systemMaintenance: document.getElementById('systemMaintenance').checked,
+                systemUpdates: document.getElementById('systemUpdates').checked,
+                systemSecurity: document.getElementById('systemSecurity').checked,
+                primaryEmail: document.getElementById('primaryNotificationEmail').value,
+                secondaryEmail: document.getElementById('secondaryNotificationEmail').value
+            };
+            
+            localStorage.setItem('storeSettings', JSON.stringify(settings));
+            showNotification('Notification settings saved successfully!', 'success');
+        }
+
+        function savePaymentSettings() {
+            const settings = JSON.parse(localStorage.getItem('storeSettings') || '{}');
+            
+            settings.payment = {
+                cod: document.getElementById('paymentCOD').checked,
+                cards: document.getElementById('paymentCards').checked,
+                upi: document.getElementById('paymentUPI').checked,
+                netbanking: document.getElementById('paymentNetbanking').checked,
+                wallets: document.getElementById('paymentWallets').checked,
+                codCharge: parseFloat(document.getElementById('codCharge').value) || 0,
+                freeCodLimit: parseFloat(document.getElementById('freeCodLimit').value) || 0,
+                gateway: document.getElementById('paymentGateway').value
+            };
+            
+            localStorage.setItem('storeSettings', JSON.stringify(settings));
+            showNotification('Payment settings saved successfully!', 'success');
+        }
+
+        function saveShippingSettings() {
+            const settings = JSON.parse(localStorage.getItem('storeSettings') || '{}');
+            
+            settings.shipping = {
+                defaultCharge: parseFloat(document.getElementById('defaultShipping').value) || 0,
+                freeShippingLimit: parseFloat(document.getElementById('freeShippingLimit').value) || 0,
+                processingTime: document.getElementById('processingTime').value,
+                deliveryTime: document.getElementById('deliveryTime').value
+            };
+            
+            localStorage.setItem('storeSettings', JSON.stringify(settings));
+            showNotification('Shipping settings saved successfully!', 'success');
+        }
+
+        function saveSecuritySettings() {
+            const settings = JSON.parse(localStorage.getItem('storeSettings') || '{}');
+            
+            settings.security = {
+                strongPasswords: document.getElementById('strongPasswords').checked,
+                passwordExpiry: document.getElementById('passwordExpiry').checked,
+                twoFactorAuth: document.getElementById('twoFactorAuth').checked,
+                sessionTimeout: parseInt(document.getElementById('sessionTimeout').value) || 30,
+                loginAlerts: document.getElementById('loginAlerts').checked,
+                ipWhitelist: document.getElementById('ipWhitelist').checked
+            };
+            
+            localStorage.setItem('storeSettings', JSON.stringify(settings));
+            showNotification('Security settings saved successfully!', 'success');
+        }
+
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showNotification('Please fill in all password fields.', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showNotification('New passwords do not match.', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                showNotification('Password must be at least 8 characters long.', 'error');
+                return;
+            }
+            
+            // Here you would normally verify the current password
+            // For demo purposes, we'll just update it
+            const adminUsers = JSON.parse(localStorage.getItem('adminUsers') || '[]');
+            const currentAdmin = JSON.parse(localStorage.getItem('adminSession') || '{}');
+            
+            if (currentAdmin.email) {
+                const userIndex = adminUsers.findIndex(user => user.email === currentAdmin.email);
+                if (userIndex !== -1) {
+                    adminUsers[userIndex].password = newPassword;
+                    localStorage.setItem('adminUsers', JSON.stringify(adminUsers));
+                    
+                    // Clear form
+                    document.getElementById('passwordChangeForm').reset();
+                    showNotification('Password changed successfully!', 'success');
+                } else {
+                    showNotification('Error: Admin user not found.', 'error');
+                }
+            } else {
+                showNotification('Error: No active admin session.', 'error');
+            }
+        }
+
+        function showNotification(message, type) {
+            // Simple notification system
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 250px;';
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'times' : 'info'}-circle me-2"></i>
+                ${message}
+                <button type="button" class="btn-close ms-2" onclick="this.parentElement.remove()"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

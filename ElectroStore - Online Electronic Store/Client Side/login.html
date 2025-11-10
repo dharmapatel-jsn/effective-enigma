@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ElectroStore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Enhanced Login Page Styles */
+        .login-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid rgba(0,123,255,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px rgba(0,123,255,0.1);
+        }
+        
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,123,255,0.15);
+        }
+        
+        /* Form Input Animations */
+        .form-control {
+            transition: all 0.3s ease;
+            border: 2px solid #e9ecef;
+        }
+        
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.15);
+            transform: scale(1.02);
+        }
+        
+        .form-control:hover {
+            border-color: #007bff;
+        }
+        
+        /* Button Animations */
+        .btn-animated {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-animated::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-animated:hover::before {
+            left: 100%;
+        }
+        
+        /* Create Account Button Pulse Animation */
+        .btn-create-account {
+            animation: subtlePulse 3s infinite;
+        }
+        
+        @keyframes subtlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        /* Benefits Card Animation */
+        .benefits-card {
+            opacity: 0;
+            animation: slideUp 0.8s ease forwards;
+            animation-delay: 0.5s;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Social Button Hover Effects */
+        .social-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .social-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Demo Alert Enhancement */
+        .demo-alert {
+            background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+            border: 1px solid #17a2b8;
+            border-radius: 10px;
+        }
+        
+        /* Input Focus Glow */
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1), 0 0 20px rgba(0,123,255,0.1);
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <a href="index.html" class="logo">
+                <i class="fas fa-bolt"></i> ElectroStore
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="categories.html">Categories</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li>
+                    <a href="cart.html" class="position-relative">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count badge bg-warning text-dark position-absolute top-0 start-100 translate-middle">0</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Login Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="login-card card border-0 rounded-4">
+                        <div class="card-body p-5">
+                            <!-- Header -->
+                            <div class="text-center mb-4">
+                                <i class="fas fa-user-circle fa-4x text-primary mb-3"></i>
+                                <h2 class="text-primary font-weight-bold">Welcome Back!</h2>
+                                <p class="text-muted">Sign in to your account</p>
+                            </div>
+
+                            <!-- Login Form -->
+                            <form id="loginForm" onsubmit="handleLogin(event)">
+                                <div class="form-group mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="fas fa-envelope me-2"></i>Email Address
+                                    </label>
+                                    <input type="email" class="form-control form-control-lg" id="email" name="email" 
+                                           placeholder="Enter your email" required>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="password" class="form-label">
+                                        <i class="fas fa-lock me-2"></i>Password
+                                    </label>
+                                    <div class="position-relative">
+                                        <input type="password" class="form-control form-control-lg" id="password" 
+                                               name="password" placeholder="Enter your password" required>
+                                        <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3" 
+                                                onclick="togglePassword()">
+                                            <i class="fas fa-eye" id="toggleIcon"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe">
+                                        <label class="form-check-label" for="rememberMe">
+                                            Remember me
+                                        </label>
+                                    </div>
+                                    <a href="#" class="text-primary text-decoration-none" onclick="showNotification('Password reset feature coming soon!', 'info')">
+                                        Forgot Password?
+                                    </a>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-lg w-100 mb-3 btn-animated shadow" id="loginBtn">
+                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                    <span class="fw-bold">Sign In to Continue</span>
+                                    <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                            </form>
+
+                            <!-- Demo Credentials -->
+                            <div class="demo-alert alert border-0 shadow-sm">
+                                <strong>Demo Credentials:</strong><br>
+                                Email: demo@electrostore.com<br>
+                                Password: demo123
+                                <button class="btn btn-sm btn-outline-primary float-end" onclick="fillDemoCredentials()">
+                                    Use Demo
+                                </button>
+                            </div>
+
+                            <!-- Social Login -->
+                            <div class="text-center mb-4">
+                                <div class="row align-items-center mb-3">
+                                    <div class="col"><hr class="border-secondary border-opacity-25"></div>
+                                    <div class="col-auto">
+                                        <span class="text-muted small bg-light px-3">Or sign in with</span>
+                                    </div>
+                                    <div class="col"><hr class="border-secondary border-opacity-25"></div>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-outline-danger social-btn" 
+                                            onclick="showNotification('Google login coming soon!', 'info')"
+                                            disabled title="Coming Soon">
+                                        <i class="fab fa-google me-2"></i>
+                                        <span>Continue with Google</span>
+                                        <small class="ms-2 text-muted">(Coming Soon)</small>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary social-btn" 
+                                            onclick="showNotification('Facebook login coming soon!', 'info')"
+                                            disabled title="Coming Soon">
+                                        <i class="fab fa-facebook me-2"></i>
+                                        <span>Continue with Facebook</span>
+                                        <small class="ms-2 text-muted">(Coming Soon)</small>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Create Account Section -->
+                            <div class="text-center">
+                                <div class="row align-items-center mb-3">
+                                    <div class="col"><hr class="border-primary border-opacity-25"></div>
+                                    <div class="col-auto">
+                                        <span class="text-muted small bg-light px-3">New to ElectroStore?</span>
+                                    </div>
+                                    <div class="col"><hr class="border-primary border-opacity-25"></div>
+                                </div>
+                                
+                                <!-- Prominent Create Account Button -->
+                                <div class="d-grid gap-2 mb-3">
+                                    <a href="register.html" class="btn btn-success btn-lg shadow-lg btn-create-account" 
+                                       style="background: linear-gradient(135deg, #28a745, #20c997); border: none; font-weight: bold;">
+                                        <i class="fas fa-rocket me-2"></i>
+                                        <span class="fw-bold">Create My FREE Account</span>
+                                        <i class="fas fa-gift ms-2"></i>
+                                    </a>
+                                </div>
+                                
+                                <!-- Benefits of Creating Account -->
+                                <div class="benefits-card card border-0 shadow-sm mb-3" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+                                    <div class="card-body py-3">
+                                        <h6 class="text-success mb-2">
+                                            <i class="fas fa-gift me-2"></i>Why Create an Account?
+                                        </h6>
+                                        <div class="row text-start small">
+                                            <div class="col-6">
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span>Track your orders</span>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span>Faster checkout</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span>Exclusive offers</span>
+                                                </div>
+                                                <div class="d-flex align-items-center mb-1">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    <span>Wishlist & favorites</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Alternative text link for those who prefer it -->
+                                <p class="text-muted small mb-0">
+                                    Already have an account? Just sign in above 
+                                    <i class="fas fa-arrow-up text-primary"></i>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="bg-primary text-white py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 mb-3">
+                    <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                    <h5>Easy Shopping</h5>
+                    <p>Browse and buy electronics with just a few clicks</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <i class="fas fa-truck fa-3x mb-3"></i>
+                    <h5>Fast Delivery</h5>
+                    <p>Get your products delivered across India quickly</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <i class="fas fa-shield-alt fa-3x mb-3"></i>
+                    <h5>Secure Payment</h5>
+                    <p>Your transactions are safe and secure with us</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-bolt"></i> ElectroStore</h3>
+                <p>Your trusted partner for all electronics needs.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <ul>
+                    <li><i class="fas fa-phone"></i> +91-9876543210</li>
+                    <li><i class="fas fa-envelope"></i> support@electrostore.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> New Delhi, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ElectroStore. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        // Enhanced Login Functionality - Works with Registration System
+        
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Validate inputs
+            if (!email || !password) {
+                showNotification('Please enter both email and password.', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const originalHTML = loginBtn.innerHTML;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Signing In...';
+            loginBtn.disabled = true;
+            
+            // Simulate login delay for better UX
+            setTimeout(() => {
+                // Check demo credentials first
+                if (email === 'demo@electrostore.com' && password === 'demo123') {
+                    loginSuccess({
+                        userId: 'demo_user',
+                        firstName: 'Demo',
+                        lastName: 'User',
+                        email: 'demo@electrostore.com'
+                    }, loginBtn);
+                    return;
+                }
+                
+                // Check registered users
+                const users = JSON.parse(localStorage.getItem('electrostore_users') || '[]');
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    // Update last login
+                    user.lastLogin = new Date().toISOString();
+                    const userIndex = users.findIndex(u => u.email === email);
+                    users[userIndex] = user;
+                    localStorage.setItem('electrostore_users', JSON.stringify(users));
+                    
+                    loginSuccess(user, loginBtn);
+                } else {
+                    // Login failed
+                    loginBtn.innerHTML = '<i class="fas fa-times-circle me-2"></i>Login Failed';
+                    loginBtn.classList.remove('btn-primary');
+                    loginBtn.classList.add('btn-danger');
+                    
+                    showNotification('Invalid email or password. Please try again.', 'error');
+                    
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        loginBtn.innerHTML = originalHTML;
+                        loginBtn.classList.remove('btn-danger');
+                        loginBtn.classList.add('btn-primary');
+                        loginBtn.disabled = false;
+                    }, 2000);
+                }
+            }, 1000);
+        }
+        
+        function loginSuccess(user, loginBtn) {
+            // Save user session
+            const sessionData = {
+                userId: user.userId,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                loginTime: new Date().toISOString()
+            };
+            
+            sessionStorage.setItem('electrostore_current_user', JSON.stringify(sessionData));
+            
+            // Update button to success state
+            loginBtn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Welcome Back!';
+            loginBtn.classList.remove('btn-primary');
+            loginBtn.classList.add('btn-success');
+            
+            // Show success message
+            showNotification(`Welcome back, ${user.firstName}! Redirecting to homepage...`, 'success');
+            
+            // Redirect to homepage
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        }
+        
+        function togglePassword() {
+            const p = document.getElementById('password');
+            const i = document.getElementById('toggleIcon');
+            if (p.type === 'password') {
+                p.type = 'text';
+                i.className = 'fas fa-eye-slash';
+            } else {
+                p.type = 'password';
+                i.className = 'fas fa-eye';
+            }
+        }
+        
+        function fillDemoCredentials() {
+            document.getElementById('email').value = 'demo@electrostore.com';
+            document.getElementById('password').value = 'demo123';
+            showNotification('Demo credentials filled! Click Sign In to continue.', 'info');
+        }
+        
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = sessionStorage.getItem('electrostore_current_user');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                showNotification(`You are already logged in as ${user.firstName}! Redirecting...`, 'info');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+            
+            // Add form validation
+            const form = document.getElementById('loginForm');
+            const inputs = form.querySelectorAll('input[required]');
+            
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value.trim()) {
+                        this.classList.add('is-valid');
+                        this.classList.remove('is-invalid');
+                    } else {
+                        this.classList.add('is-invalid');
+                        this.classList.remove('is-valid');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
